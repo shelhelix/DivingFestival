@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.gamecomponentattributes": {
+      "version": "https://github.com/shelhelix/GameComponentAttributes.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ad71e74c61294e5a7183cfb971258e00a70e81c7"
+    },
     "com.unity.2d.animation": {
       "version": "3.2.6",
       "depth": 0,
