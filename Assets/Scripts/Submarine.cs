@@ -17,7 +17,7 @@ namespace LD48Project {
 		public enum Subsystem {
 			LeftShield = 0,
 			Engine = 1,
-			RightShield = 2
+			RightShield = 2, 
 		}
 		
 		public enum Side {
@@ -46,32 +46,32 @@ namespace LD48Project {
 		[NotNull] public ParticleSystem EngineBubbles;
 
 		[NotNull] public EndgameWindow EndgameWindow;
-		// [NotNull] public ParticleSystem DamageSmoke;
+		
+		public readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution = new Dictionary<Subsystem, ReactiveValue<int>> {
+			{Subsystem.LeftShield,  new ReactiveValue<int>()},
+			{Subsystem.Engine,      new ReactiveValue<int>(TotalEnergyUnits)},
+			{Subsystem.RightShield, new ReactiveValue<int>()}
+		};
+
+		public readonly Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
+			new Dictionary<Subsystem, (string, string)> {
+				{Subsystem.LeftShield, ("q", "a")},
+				{Subsystem.Engine, ("w", "s")},
+				{Subsystem.RightShield, ("e", "d")}
+				
+			};
 		
 		readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
 			{Side.LeftSide, Subsystem.LeftShield},
 			{Side.RightSide, Subsystem.RightShield}
 		};
 
-		readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution = new Dictionary<Subsystem, ReactiveValue<int>> {
-			{Subsystem.LeftShield,  new ReactiveValue<int>()},
-			{Subsystem.Engine,      new ReactiveValue<int>(TotalEnergyUnits)},
-			{Subsystem.RightShield, new ReactiveValue<int>()}
-		};
-
-		readonly Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
-			new Dictionary<Subsystem, (string, string)> {
-				{Subsystem.LeftShield, ("q", "a")},
-				{Subsystem.Engine, ("w", "s")},
-				{Subsystem.RightShield, ("e", "d")}
-			};
-
 		public float CurSubmarineSpeed => MaxSubmarineSpeed * EnginePower;
 
+		public int TotalUsedPower => EnergyDistribution.Sum(item => item.Value.Value);
+		
 		float EnginePower => ((float)EnergyDistribution[Subsystem.Engine].Value / TotalEnergyUnits);
-		
-		int TotalUsedPower => EnergyDistribution.Sum(item => item.Value.Value);
-		
+
 		void Update() {
 			if ( _stopEveryting ) {
 				return;
