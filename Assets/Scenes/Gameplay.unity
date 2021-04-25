@@ -6731,7 +6731,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSubmarineSpeed: 5
   StartPower: 300
-  StartHp: 5
+  StartHp: 7
   UsedPower: {fileID: 286764372}
   EngineBubbles: {fileID: 114469821}
   EndgameWindow: {fileID: 1025315578}
@@ -7291,9 +7291,10 @@ MonoBehaviour:
   - Enemy: {fileID: 716949918}
     WarningSign: {fileID: 1845326435}
   Submarine: {fileID: 1002090125}
+  StartDelay: 5
   WarningBlinkingTime: 0.5
   WarningPeriods: 3
-  MinSpawnTime: 2
+  MinSpawnTime: 1
   MaxSpawnTime: 3
 --- !u!1 &1154080442
 GameObject:
@@ -8613,7 +8614,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 110.3, y: 146.7}
+  m_AnchoredPosition: {x: 110.29999, y: 146.7}
   m_SizeDelta: {x: 209.20801, y: 280.60397}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1668356905
