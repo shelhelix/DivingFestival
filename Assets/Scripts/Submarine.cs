@@ -29,7 +29,12 @@ namespace LD48Project {
 		
 		public float MaxSubmarineSpeed = 1;
 		public int   Hp = 5;
-		public float Power = 100;
+		public float StartPower = 100;
+
+		public ReactiveValue<float> CurPower = new ReactiveValue<float>();
+		public ReactiveValue<float> Depth = new ReactiveValue<float>();
+
+		bool _stopEveryting;
 		
 		[NotNullOrEmpty] public List<PowerView> PowerViews;
 
@@ -57,11 +62,16 @@ namespace LD48Project {
 				{Subsystem.RightShield, ("e", "d")}
 			};
 
-		public float CurSubmarineSpeed => MaxSubmarineSpeed * ((float)EnergyDistribution[Subsystem.Engine].Value / TotalEnergyUnits);
+		public float CurSubmarineSpeed => MaxSubmarineSpeed * EnginePower;
+
+		float EnginePower => ((float)EnergyDistribution[Subsystem.Engine].Value / TotalEnergyUnits);
 		
 		int TotalUsedPower => EnergyDistribution.Sum(item => item.Value.Value);
 		
 		void Update() {
+			if ( _stopEveryting ) {
+				return;
+			}
 			foreach ( var control in SubsystemsControls ) {
 				if ( Input.GetKeyDown(control.Value.up) ) {
 					if ( !TryAddPowerToSystem(control.Key) ) {
@@ -82,8 +92,12 @@ namespace LD48Project {
 
 			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
 			SubmarineHp.Text.text = Hp.ToString();
-			Power -= TotalUsedPower * Time.deltaTime;
-			if ( (Power <= 0) || (Hp <= 0) ) {
+			CurPower.Value -= TotalUsedPower * Time.deltaTime;
+
+			Depth.Value += Time.deltaTime * EnginePower;
+			
+			if ( (CurPower.Value <= 0) || (Hp <= 0) ) {
+				_stopEveryting = true;
 				Debug.LogError("Need to end the game");
 				// TODO: End game
 			}
@@ -96,10 +110,14 @@ namespace LD48Project {
 				powerView.SystemName.text = powerView.System.ToString();
 			}
 
+			CurPower.Value = StartPower;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
 		}
 		
 		public void TakeDamage(Side side, int damage) {
+			if ( _stopEveryting ) {
+				return;
+			}
 			var systemName = SideToSystem[side];
 			var shieldPower = EnergyDistribution[systemName].Value;
 			Hp -= Math.Max(damage - shieldPower, 0);

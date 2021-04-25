@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 
 using GameComponentAttributes;
+using GameComponentAttributes.Attributes;
 
 namespace LD48Project.Starter {
     public class GameplayStarter : GameComponent {
+	    [NotNull] public Submarine Submarine;
+
 	    void Start() {
 		    InitComponents();
 	    }
