@@ -12,8 +12,6 @@ namespace LD48Project.UI {
 		[NotNull] public TMP_Text Text;
 		[NotNull] public Image    Background;
 
-		bool _firstInit = true;
-
 		int _value;
 		
 		public override void Init(GameplayStarter starter) {
