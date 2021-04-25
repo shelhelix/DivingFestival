@@ -11,6 +11,8 @@ namespace LD48Project.Enemies {
 		[NotNullOrEmpty] public List<EnemyWithSignContainer> Enemies;
 		[NotNull] public Transform Submarine;
 
+		public float StartDelay = 5;
+		
 		public float WarningBlinkingTime = 0.5f;
 		public int WarningPeriods = 3;
 		
@@ -18,6 +20,7 @@ namespace LD48Project.Enemies {
 		public float MaxSpawnTime;
 		
 		float _nextWaveTimer;
+		float _startTimer;
 		
 		bool _isRunning;
 
@@ -26,9 +29,14 @@ namespace LD48Project.Enemies {
 			foreach ( var enemy in Enemies ) {
 				enemy.WarningSign.SetActive(false);
 			}
+			_startTimer = StartDelay;
 		}
 
 		void Update() {
+			_startTimer -= Time.deltaTime;
+			if ( _startTimer > 0f ) {
+				return;
+			}
 			if ( _isRunning ) {
 				return;
 			}
