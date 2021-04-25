@@ -13,18 +13,21 @@ namespace LD48Project.UI {
 		[NotNull] public Image    Background;
 
 		bool _firstInit = true;
+
+		int _value;
 		
 		public override void Init(GameplayStarter starter) {
 			starter.Submarine.Hp.OnValueChanged += UpdateText;
+			UpdateText(starter.Submarine.Hp.Value);
 		}
 
 		void UpdateText(int value) {
 			var valueToShow = Mathf.Max(value, 0);
 			Text.text = valueToShow.ToString();
-			if ( !_firstInit ) {
+			if ( value < _value ) {
 				RunRedAnimation(Background);
 			}
-			_firstInit = false;
+			_value = value;
 		}
 		
 		void RunRedAnimation(Image image) {
@@ -32,6 +35,5 @@ namespace LD48Project.UI {
 			seq.Append(image.DOColor(Color.red, 0.3f));
 			seq.Append(image.DOColor(Color.white, 0.3f));
 		}
-
 	}
 }
