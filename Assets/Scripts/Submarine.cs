@@ -9,6 +9,7 @@ using DG.Tweening;
 using LD48Project.Starter;
 
 using GameComponentAttributes.Attributes;
+using LD48Project.UI;
 using LD48Project.Utils;
 
 namespace LD48Project {
@@ -42,7 +43,9 @@ namespace LD48Project {
 		[NotNull] public BasicItemView SubmarineHp;
 
 		[NotNull] public ParticleSystem EngineBubbles;
-		[NotNull] public ParticleSystem DamageSmoke;
+
+		[NotNull] public EndgameWindow EndgameWindow;
+		// [NotNull] public ParticleSystem DamageSmoke;
 		
 		readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
 			{Side.LeftSide, Subsystem.LeftShield},
@@ -98,8 +101,7 @@ namespace LD48Project {
 			
 			if ( (CurPower.Value <= 0) || (Hp <= 0) ) {
 				_stopEveryting = true;
-				Debug.LogError("Need to end the game");
-				// TODO: End game
+				EndgameWindow.Init(Depth.Value);
 			}
 		}
 
