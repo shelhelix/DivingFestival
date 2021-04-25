@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+
+using UnityEngine;
+using UnityEngine.UI;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +9,6 @@ using DG.Tweening;
 using LD48Project.Starter;
 
 using GameComponentAttributes.Attributes;
-using TMPro;
-using UnityEngine.UI;
 
 namespace LD48Project {
 	public class Submarine : GameplayComponent {
@@ -17,46 +18,49 @@ namespace LD48Project {
 			RightShield = 2
 		}
 		
+		public enum Side {
+			LeftSide = 0,
+			RightSide = 1
+		}
+		
 		const int TotalEnergyUnits = 5;
 		
 		public float MaxSubmarineSpeed = 1;
-
+		public int   Hp = 5;
+		public float Power = 100;
+		
 		[NotNullOrEmpty] public List<PowerView> PowerViews;
 
-		[NotNull] public TMP_Text TotalPowerUse;
-		[NotNull] public Image    TotalPowerImage;
+		[NotNull] public BasicItemView UsedPower;
+		[NotNull] public BasicItemView SubmarineHp;
 
-		Dictionary<Subsystem, int> EnergyDistribution = new Dictionary<Subsystem, int> {
+		readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
+			{Side.LeftSide, Subsystem.LeftShield},
+			{Side.RightSide, Subsystem.RightShield}
+		};
+
+		readonly Dictionary<Subsystem, int> EnergyDistribution = new Dictionary<Subsystem, int> {
 			{Subsystem.LeftShield, 0},
 			{Subsystem.Engine, TotalEnergyUnits},
 			{Subsystem.RightShield, 0}
 		};
 
-		Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
+		readonly Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
 			new Dictionary<Subsystem, (string, string)> {
 				{Subsystem.LeftShield, ("q", "a")},
 				{Subsystem.Engine, ("w", "s")},
 				{Subsystem.RightShield, ("e", "d")}
 			};
-		
-		
+
 		public float CurSubmarineSpeed => MaxSubmarineSpeed * ((float)EnergyDistribution[Subsystem.Engine] / TotalEnergyUnits);
 		
 		int TotalUsedPower => EnergyDistribution.Sum(item => item.Value);
-
-		public override void Init(GameplayStarter starter) {
-			foreach ( var powerView in PowerViews ) {
-				powerView.UpKey.text   = SubsystemsControls[powerView.System].up;
-				powerView.DownKey.text = SubsystemsControls[powerView.System].down;
-				powerView.SystemName.text = powerView.System.ToString();
-			}
-		}
-
+		
 		void Update() {
 			foreach ( var control in SubsystemsControls ) {
 				if ( Input.GetKeyDown(control.Value.up) ) {
 					if ( !TryAddPowerToSystem(control.Key) ) {
-						RunRedAnimation(TotalPowerImage);
+						RunRedAnimation(UsedPower.Background);
 					}
 				}
 				if ( Input.GetKeyDown(control.Value.down) ) {
@@ -71,7 +75,21 @@ namespace LD48Project {
 				powerView.PowerUsageText.text = EnergyDistribution[powerView.System].ToString();
 			}
 
-			TotalPowerUse.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
+			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
+			SubmarineHp.Text.text = SubmarineHp.ToString();
+			Power -= TotalUsedPower * Time.deltaTime;
+			if ( (Power <= 0) || (Hp <= 0) ) {
+				Debug.LogError("Need to end the game");
+				// TODO: End game
+			}
+		}
+
+		public override void Init(GameplayStarter starter) {
+			foreach ( var powerView in PowerViews ) {
+				powerView.UpKey.text   = SubsystemsControls[powerView.System].up;
+				powerView.DownKey.text = SubsystemsControls[powerView.System].down;
+				powerView.SystemName.text = powerView.System.ToString();
+			}
 		}
 
 		bool TryAddPowerToSystem(Subsystem system) {
@@ -96,6 +114,12 @@ namespace LD48Project {
 			var seq = DOTween.Sequence();
 			seq.Append(image.DOColor(Color.red, 0.3f));
 			seq.Append(image.DOColor(Color.white, 0.3f));
+		}
+
+		public void TakeDamage(Side side, int damage) {
+			var systemName = SideToSystem[side];
+			var shieldPower = EnergyDistribution[systemName];
+			Hp -= Math.Max(damage - shieldPower, 0);
 		}
 	}
 }
