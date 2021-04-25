@@ -9,6 +9,7 @@ using DG.Tweening;
 using LD48Project.Starter;
 
 using GameComponentAttributes.Attributes;
+using LD48Project.Utils;
 
 namespace LD48Project {
 	public class Submarine : GameplayComponent {
@@ -22,7 +23,8 @@ namespace LD48Project {
 			LeftSide = 0,
 			RightSide = 1
 		}
-		
+
+		const int DefaultBubbleEmission = 7;
 		const int TotalEnergyUnits = 5;
 		
 		public float MaxSubmarineSpeed = 1;
@@ -34,15 +36,18 @@ namespace LD48Project {
 		[NotNull] public BasicItemView UsedPower;
 		[NotNull] public BasicItemView SubmarineHp;
 
+		[NotNull] public ParticleSystem EngineBubbles;
+		[NotNull] public ParticleSystem DamageSmoke;
+		
 		readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
 			{Side.LeftSide, Subsystem.LeftShield},
 			{Side.RightSide, Subsystem.RightShield}
 		};
 
-		readonly Dictionary<Subsystem, int> EnergyDistribution = new Dictionary<Subsystem, int> {
-			{Subsystem.LeftShield, 0},
-			{Subsystem.Engine, TotalEnergyUnits},
-			{Subsystem.RightShield, 0}
+		readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution = new Dictionary<Subsystem, ReactiveValue<int>> {
+			{Subsystem.LeftShield,  new ReactiveValue<int>()},
+			{Subsystem.Engine,      new ReactiveValue<int>(TotalEnergyUnits)},
+			{Subsystem.RightShield, new ReactiveValue<int>()}
 		};
 
 		readonly Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
@@ -52,9 +57,9 @@ namespace LD48Project {
 				{Subsystem.RightShield, ("e", "d")}
 			};
 
-		public float CurSubmarineSpeed => MaxSubmarineSpeed * ((float)EnergyDistribution[Subsystem.Engine] / TotalEnergyUnits);
+		public float CurSubmarineSpeed => MaxSubmarineSpeed * ((float)EnergyDistribution[Subsystem.Engine].Value / TotalEnergyUnits);
 		
-		int TotalUsedPower => EnergyDistribution.Sum(item => item.Value);
+		int TotalUsedPower => EnergyDistribution.Sum(item => item.Value.Value);
 		
 		void Update() {
 			foreach ( var control in SubsystemsControls ) {
@@ -72,11 +77,11 @@ namespace LD48Project {
 			}
 
 			foreach ( var powerView in PowerViews ) {
-				powerView.PowerUsageText.text = EnergyDistribution[powerView.System].ToString();
+				powerView.PowerUsageText.text = EnergyDistribution[powerView.System].Value.ToString();
 			}
 
 			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
-			SubmarineHp.Text.text = SubmarineHp.ToString();
+			SubmarineHp.Text.text = Hp.ToString();
 			Power -= TotalUsedPower * Time.deltaTime;
 			if ( (Power <= 0) || (Hp <= 0) ) {
 				Debug.LogError("Need to end the game");
@@ -90,6 +95,14 @@ namespace LD48Project {
 				powerView.DownKey.text = SubsystemsControls[powerView.System].down;
 				powerView.SystemName.text = powerView.System.ToString();
 			}
+
+			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
+		}
+		
+		public void TakeDamage(Side side, int damage) {
+			var systemName = SideToSystem[side];
+			var shieldPower = EnergyDistribution[systemName].Value;
+			Hp -= Math.Max(damage - shieldPower, 0);
 		}
 
 		bool TryAddPowerToSystem(Subsystem system) {
@@ -97,16 +110,16 @@ namespace LD48Project {
 				Debug.LogWarning($"Can't add power to {system}. All power is in use");
 				return false;
 			}
-			EnergyDistribution[system]++;
+			EnergyDistribution[system].Value++;
 			return true;
 		}
 		
 		bool TrySubtractPower(Subsystem system) {
-			if ( EnergyDistribution[system] == 0 ) {
+			if ( EnergyDistribution[system].Value == 0 ) {
 				Debug.LogWarning($"Can't sub power. power for system {system} is zero");
 				return false;
 			}
-			EnergyDistribution[system]--;
+			EnergyDistribution[system].Value--;
 			return true;
 		}
 
@@ -116,10 +129,9 @@ namespace LD48Project {
 			seq.Append(image.DOColor(Color.white, 0.3f));
 		}
 
-		public void TakeDamage(Side side, int damage) {
-			var systemName = SideToSystem[side];
-			var shieldPower = EnergyDistribution[systemName];
-			Hp -= Math.Max(damage - shieldPower, 0);
+		void OnEnginePowerChanged(int newPower) {
+			var emission = EngineBubbles.emission;
+			emission.rateOverTimeMultiplier = DefaultBubbleEmission * ((float)newPower / TotalEnergyUnits);
 		}
 	}
 }
