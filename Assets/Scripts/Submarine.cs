@@ -48,6 +48,7 @@ namespace LD48Project {
 			foreach ( var powerView in PowerViews ) {
 				powerView.UpKey.text   = SubsystemsControls[powerView.System].up;
 				powerView.DownKey.text = SubsystemsControls[powerView.System].down;
+				powerView.SystemName.text = powerView.System.ToString();
 			}
 		}
 

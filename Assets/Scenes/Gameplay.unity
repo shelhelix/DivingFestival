@@ -214,7 +214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 112619217}
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: 14.677698, y: 11.87649, z: 610.50116}
+  m_LocalPosition: {x: 100, y: 11.87649, z: 610.50116}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1075152588}
@@ -302,7 +302,7 @@ MonoBehaviour:
     radialRadius: 1
   useFill: 1
   pivot: 0
-  width: 20
+  width: 200
   height: 200
   type: 0
   cornerRadiusMode: 0
@@ -5947,7 +5947,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 15
+  m_Spacing: 100.1
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
