@@ -10,8 +10,8 @@ namespace LD48Project.UI {
 			starter.Submarine.CurPower.OnValueChanged += UpdateText;
 		}
 
-		void UpdateText(float depth) {
-			DepthText.text = depth.ToString("0.");
+		void UpdateText(float value) {
+			DepthText.text = value.ToString("0.");
 		}
 	}
 }

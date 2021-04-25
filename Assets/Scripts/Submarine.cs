@@ -29,8 +29,10 @@ namespace LD48Project {
 		const int TotalEnergyUnits = 5;
 		
 		public float MaxSubmarineSpeed = 1;
-		public int   Hp = 5;
 		public float StartPower = 100;
+		public int StartHp = 5;
+		
+		public ReactiveValue<int> Hp = new ReactiveValue<int>();
 
 		public ReactiveValue<float> CurPower = new ReactiveValue<float>();
 		public ReactiveValue<float> Depth = new ReactiveValue<float>();
@@ -40,7 +42,6 @@ namespace LD48Project {
 		[NotNullOrEmpty] public List<PowerView> PowerViews;
 
 		[NotNull] public BasicItemView UsedPower;
-		[NotNull] public BasicItemView SubmarineHp;
 
 		[NotNull] public ParticleSystem EngineBubbles;
 
@@ -94,12 +95,11 @@ namespace LD48Project {
 			}
 
 			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
-			SubmarineHp.Text.text = Hp.ToString();
 			CurPower.Value -= TotalUsedPower * Time.deltaTime;
 
 			Depth.Value += Time.deltaTime * EnginePower;
 			
-			if ( (CurPower.Value <= 0) || (Hp <= 0) ) {
+			if ( (CurPower.Value <= 0) || (Hp.Value <= 0) ) {
 				_stopEveryting = true;
 				EndgameWindow.Init(Depth.Value);
 			}
@@ -113,6 +113,7 @@ namespace LD48Project {
 			}
 
 			CurPower.Value = StartPower;
+			Hp.Value = StartHp;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
 		}
 		
@@ -122,7 +123,7 @@ namespace LD48Project {
 			}
 			var systemName = SideToSystem[side];
 			var shieldPower = EnergyDistribution[systemName].Value;
-			Hp -= Math.Max(damage - shieldPower, 0);
+			Hp.Value -= Math.Max(damage - shieldPower, 0);
 		}
 
 		bool TryAddPowerToSystem(Subsystem system) {
