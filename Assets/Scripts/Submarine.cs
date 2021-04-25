@@ -93,8 +93,8 @@ namespace LD48Project {
 
 		void RunRedAnimation(Image image) {
 			var seq = DOTween.Sequence();
-			seq.Append(image.DOColor(Color.red, 0.5f));
-			seq.Append(image.DOColor(Color.white, 0.5f));
+			seq.Append(image.DOColor(Color.red, 0.3f));
+			seq.Append(image.DOColor(Color.white, 0.3f));
 		}
 	}
 }
