@@ -25,8 +25,9 @@ namespace LD48Project {
 			RightSide = 1
 		}
 
+		public const int TotalEnergyUnits = 5;
+		
 		const int DefaultBubbleEmission = 7;
-		const int TotalEnergyUnits = 5;
 		
 		public float MaxSubmarineSpeed = 1;
 		public float StartPower = 100;
@@ -38,8 +39,6 @@ namespace LD48Project {
 		public ReactiveValue<float> Depth = new ReactiveValue<float>();
 
 		bool _stopEveryting;
-		
-		[NotNullOrEmpty] public List<PowerView> PowerViews;
 
 		[NotNull] public BasicItemView UsedPower;
 
@@ -53,15 +52,15 @@ namespace LD48Project {
 			{Subsystem.RightShield, new ReactiveValue<int>()}
 		};
 
-		public readonly Dictionary<Subsystem, (string up, string down)> SubsystemsControls =
-			new Dictionary<Subsystem, (string, string)> {
-				{Subsystem.LeftShield, ("q", "a")},
-				{Subsystem.Engine, ("w", "s")},
-				{Subsystem.RightShield, ("e", "d")}
+		public readonly Dictionary<Subsystem, string> SubsystemsControls =
+			new Dictionary<Subsystem, string> {
+				{Subsystem.LeftShield, "a"},
+				{Subsystem.Engine, "s"},
+				{Subsystem.RightShield, "d"}
 				
 			};
 		
-		readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
+		public readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
 			{Side.LeftSide, Subsystem.LeftShield},
 			{Side.RightSide, Subsystem.RightShield}
 		};
@@ -77,21 +76,11 @@ namespace LD48Project {
 				return;
 			}
 			foreach ( var control in SubsystemsControls ) {
-				if ( Input.GetKeyDown(control.Value.up) ) {
+				if ( Input.GetKeyDown(control.Value) ) {
 					if ( !TryAddPowerToSystem(control.Key) ) {
 						RunRedAnimation(UsedPower.Background);
 					}
 				}
-				if ( Input.GetKeyDown(control.Value.down) ) {
-					if ( !TrySubtractPower(control.Key) ) {
-						var powerView = PowerViews.Find(x => x.System == control.Key);
-						RunRedAnimation(powerView.BackgroundImage);
-					}
-				}
-			}
-
-			foreach ( var powerView in PowerViews ) {
-				powerView.PowerUsageText.text = EnergyDistribution[powerView.System].Value.ToString();
 			}
 
 			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
@@ -106,12 +95,6 @@ namespace LD48Project {
 		}
 
 		public override void Init(GameplayStarter starter) {
-			foreach ( var powerView in PowerViews ) {
-				powerView.UpKey.text   = SubsystemsControls[powerView.System].up;
-				powerView.DownKey.text = SubsystemsControls[powerView.System].down;
-				powerView.SystemName.text = powerView.System.ToString();
-			}
-
 			CurPower.Value = StartPower;
 			Hp.Value = StartHp;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
@@ -127,9 +110,21 @@ namespace LD48Project {
 		}
 
 		bool TryAddPowerToSystem(Subsystem system) {
-			if ( TotalUsedPower == TotalEnergyUnits ) {
+			if ( EnergyDistribution[system].Value == TotalEnergyUnits ) {
 				Debug.LogWarning($"Can't add power to {system}. All power is in use");
 				return false;
+			}
+
+			Subsystem? maxSystem = null;
+			var maxEnergy = 0;
+			foreach ( var energy in EnergyDistribution ) {
+				if ( (energy.Value.Value > maxEnergy) && (energy.Key != system) ) {
+					maxEnergy = energy.Value.Value;
+					maxSystem = energy.Key;
+				}
+			}
+			if ( maxSystem.HasValue ) {
+				EnergyDistribution[maxSystem.Value].Value--;
 			}
 			EnergyDistribution[system].Value++;
 			return true;

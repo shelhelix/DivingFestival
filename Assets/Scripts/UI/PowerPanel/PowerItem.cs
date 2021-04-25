@@ -1,19 +1,19 @@
-﻿using LD48Project.Starter;
+﻿using GameComponentAttributes;
+using LD48Project.Starter;
 
 using GameComponentAttributes.Attributes;
 using TMPro;
 
 namespace LD48Project.UI.PowerPanel {
-	public class PowerItem : BasePowerItem {
+	public class PowerItem : GameplayComponent {
 		public Submarine.Subsystem Subsystem;
 		
+		[NotNull] public PowerBar Bar;
 		[NotNull] public TMP_Text ControlUp;
-		[NotNull] public TMP_Text ControlDown;
 
 		public override void Init(GameplayStarter starter) {
 			starter.Submarine.EnergyDistribution[Subsystem].OnValueChanged += OnValueChanged;
-			ControlUp.text = starter.Submarine.SubsystemsControls[Subsystem].up;
-			ControlDown.text = starter.Submarine.SubsystemsControls[Subsystem].down;
+			ControlUp.text = starter.Submarine.SubsystemsControls[Subsystem];
 			OnValueChanged(starter.Submarine.EnergyDistribution[Subsystem].Value);
 		}
 
