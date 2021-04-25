@@ -11,7 +11,7 @@ namespace LD48Project.UI {
 		}
 
 		void UpdateText(float depth) {
-			DepthText.text = depth.ToString(".0");
+			DepthText.text = depth.ToString("0.");
 		}
 	}
 }
