@@ -8,7 +8,7 @@
       "hash": "ad71e74c61294e5a7183cfb971258e00a70e81c7"
     },
     "com.unity.2d.animation": {
-      "version": "3.2.6",
+      "version": "3.2.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -45,12 +45,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.psdimporter": {
-      "version": "2.1.6",
+      "version": "2.1.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "2.0.2",
-        "com.unity.2d.animation": "3.2.5",
+        "com.unity.2d.common": "2.1.0",
+        "com.unity.2d.animation": "3.2.9",
         "com.unity.2d.sprite": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -62,13 +62,13 @@
       "dependencies": {}
     },
     "com.unity.2d.spriteshape": {
-      "version": "3.0.14",
+      "version": "3.0.16",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.1.0",
-        "com.unity.2d.common": "2.0.2",
-        "com.unity.2d.path": "2.0.6"
+        "com.unity.2d.common": "2.1.0",
+        "com.unity.2d.path": "2.1.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -79,7 +79,7 @@
       "dependencies": {}
     },
     "com.unity.collab-proxy": {
-      "version": "1.2.16",
+      "version": "1.6.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -93,11 +93,20 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "1.1.4",
+      "version": "1.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.ide.visualstudio": {
+      "version": "2.0.9",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.9"
       },
       "url": "https://packages.unity.com"
     },
@@ -115,14 +124,8 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.package-manager-ui": {
-      "version": "2.2.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
     "com.unity.test-framework": {
-      "version": "1.1.22",
+      "version": "1.1.27",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -133,7 +136,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "2.1.1",
+      "version": "2.1.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
