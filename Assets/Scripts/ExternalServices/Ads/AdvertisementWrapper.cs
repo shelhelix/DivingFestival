@@ -1,8 +1,9 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.Advertisements;
 
 namespace LD48Project.ExternalServices.Ads {
-	public class AdvertisementWrapper : IUnityAdsLoadListener, IUnityAdsShowListener {
+	public class AdvertisementWrapper : IUnityAdsListener {
 		Action<bool> _onShowCompletedAction;
 
 		readonly string _adId;
@@ -13,7 +14,7 @@ namespace LD48Project.ExternalServices.Ads {
 		}
 
 		public void LoadAd() {
-			Advertisement.Load(_adId, this);
+			Advertisement.Load(_adId);
 		}
 
 		public void ShowAd(Action<bool> onShowCompleted) {
@@ -22,33 +23,30 @@ namespace LD48Project.ExternalServices.Ads {
 				return;
 			}
 			_onShowCompletedAction = onShowCompleted;
-			Advertisement.Show(_adId, this);
+			Advertisement.Show(_adId);
 		}
 
-		public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message) {
-			Advertisement.Load(_adId, this);
-		}
+		public void OnUnityAdsReady(string placementId) { }
 
-		public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message) {
+		public void OnUnityAdsDidError(string message) {
 			TryInvokeShowAction(false);
-			LoadAd();
+			Advertisement.Load(_adId);
 		}
 
-		public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState) {
-			var isRewarded = showCompletionState == UnityAdsShowCompletionState.COMPLETED;
+		public void OnUnityAdsDidStart(string placementId) {
+			Debug.Log("show started");
+		}
+
+		public void OnUnityAdsDidFinish(string placementId, ShowResult showResult) {
+			Debug.Log("show ended");
+			var isRewarded = showResult == ShowResult.Finished;
 			TryInvokeShowAction(isRewarded);
 			LoadAd();
 		}
-		
-		public void OnUnityAdsAdLoaded(string placementId) { }
-
-		public void OnUnityAdsShowStart(string placementId) { }
-
-		public void OnUnityAdsShowClick(string placementId) { }
 
 		void TryInvokeShowAction(bool result) {
 			_onShowCompletedAction?.Invoke(result);
 			_onShowCompletedAction = null;
-		} 
+		}
 	}
 }
