@@ -104,8 +104,8 @@ namespace LD48Project {
 		
 		public void RestoreSubmarine() {
 			_stopEveryting = false;
-			Hp.Value       = Mathf.Max(Hp.Value + 4, 4);
-			CurPower.Value = Mathf.Max(CurPower.Value + 20, 20);
+			Hp.Value       = Mathf.Clamp(Hp.Value + 2, 2, StartHp);
+			CurPower.Value = Mathf.Clamp(CurPower.Value + StartPower / 2, StartPower / 2, StartPower);
 		}
 		
 		public void TakeDamage(Side side, int damage) {
