@@ -15,28 +15,28 @@ using LD48Project.Utils;
 namespace LD48Project {
 	public class Submarine : GameplayComponent {
 		public enum Subsystem {
-			LeftShield = 0,
-			Engine = 1,
-			RightShield = 2, 
+			LeftShield  = 0,
+			Engine      = 1,
+			RightShield = 2,
 		}
-		
+
 		public enum Side {
-			LeftSide = 0,
+			LeftSide  = 0,
 			RightSide = 1
 		}
 
 		public const int TotalEnergyUnits = 5;
-		
+
 		const int DefaultBubbleEmission = 7;
-		
+
 		public float MaxSubmarineSpeed = 1;
-		public float StartPower = 100;
-		public int StartHp = 5;
-		
+		public float StartPower        = 100;
+		public int   StartHp           = 5;
+
 		public ReactiveValue<int> Hp = new ReactiveValue<int>();
 
 		public ReactiveValue<float> CurPower = new ReactiveValue<float>();
-		public ReactiveValue<float> Depth = new ReactiveValue<float>();
+		public ReactiveValue<float> Depth    = new ReactiveValue<float>();
 
 		bool _stopEveryting;
 
@@ -45,21 +45,22 @@ namespace LD48Project {
 		[NotNull] public ParticleSystem EngineBubbles;
 
 		[NotNull] public EndgameWindow EndgameWindow;
-		
-		public readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution = new Dictionary<Subsystem, ReactiveValue<int>> {
-			{Subsystem.LeftShield,  new ReactiveValue<int>()},
-			{Subsystem.Engine,      new ReactiveValue<int>(TotalEnergyUnits)},
-			{Subsystem.RightShield, new ReactiveValue<int>()}
-		};
+
+		public readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution =
+			new Dictionary<Subsystem, ReactiveValue<int>> {
+				{Subsystem.LeftShield, new ReactiveValue<int>()},
+				{Subsystem.Engine, new ReactiveValue<int>(TotalEnergyUnits)},
+				{Subsystem.RightShield, new ReactiveValue<int>()}
+			};
 
 		public readonly Dictionary<Subsystem, string> SubsystemsControls =
 			new Dictionary<Subsystem, string> {
 				{Subsystem.LeftShield, "a"},
 				{Subsystem.Engine, "s"},
 				{Subsystem.RightShield, "d"}
-				
+
 			};
-		
+
 		public readonly Dictionary<Side, Subsystem> SideToSystem = new Dictionary<Side, Subsystem> {
 			{Side.LeftSide, Subsystem.LeftShield},
 			{Side.RightSide, Subsystem.RightShield}
@@ -68,13 +69,14 @@ namespace LD48Project {
 		public float CurSubmarineSpeed => MaxSubmarineSpeed * EnginePower;
 
 		public int TotalUsedPower => EnergyDistribution.Sum(item => item.Value.Value);
-		
+
 		float EnginePower => ((float)EnergyDistribution[Subsystem.Engine].Value / TotalEnergyUnits);
 
 		void Update() {
 			if ( _stopEveryting ) {
 				return;
 			}
+
 			foreach ( var control in SubsystemsControls ) {
 				if ( Input.GetKeyDown(control.Value) ) {
 					if ( !TryAddPowerToSystem(control.Key) ) {
@@ -83,14 +85,14 @@ namespace LD48Project {
 				}
 			}
 
-			UsedPower.Text.text = $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
-			CurPower.Value -= TotalUsedPower * Time.deltaTime;
+			UsedPower.Text.text =  $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
+			CurPower.Value      -= TotalUsedPower * Time.deltaTime;
 
 			Depth.Value += Time.deltaTime * EnginePower;
-			
+
 			if ( (CurPower.Value <= 0) || (Hp.Value <= 0) ) {
 				_stopEveryting = true;
-				EndgameWindow.Init(Depth.Value);
+				EndgameWindow.Init(this, Depth.Value);
 			}
 		}
 
@@ -98,6 +100,12 @@ namespace LD48Project {
 			CurPower.Value = StartPower;
 			Hp.Value = StartHp;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
+		}
+		
+		public void RestoreSubmarine() {
+			_stopEveryting = false;
+			Hp.Value       = Mathf.Max(Hp.Value + 4, 4);
+			CurPower.Value = Mathf.Max(CurPower.Value + 20, 20);
 		}
 		
 		public void TakeDamage(Side side, int damage) {
