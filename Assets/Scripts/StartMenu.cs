@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
+using LD48Project.ExternalServices;
+using LD48Project.ExternalServices.Ads;
 using UnityEngine;
 
 namespace LD48Project {
@@ -16,6 +18,10 @@ namespace LD48Project {
 		[NotNull] public GameObject HowToScreenRoot;
 		
 		void Start() {
+			// Init external services
+			AdvertisementService.Instance.Init();
+			GooglePlayGamesService.Instance.Init();
+			
 			StartGame.onClick.AddListener(() => SceneManager.LoadScene("Gameplay"));			
 			OpenHowToScreenButton.onClick.AddListener(() => {
 				MainScreenRoot.SetActive(false);
