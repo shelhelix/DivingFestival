@@ -1,2 +1,9 @@
 lastUpgrade=01012
 proj.pluginVersion=0.10.12
+proj.AppId=551738219629
+and.BundleId=com.shelinc.divingfestival
+proj.classDir=Assets%2f%21ThirdPartyItems
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--Google+Play+game+services+IDs.+Save+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--app_id--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e551738219629%3c%2fstring%3e%0d%0a++%3c%21--package_name--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.shelinc.divingfestival%3c%2fstring%3e%0d%0a++%3c%21--achievement+first+30+meters--%3e%0d%0a++%3cstring+name%3d%22achievement_first_30_meters%22+translatable%3d%22false%22%3eCgkI7biksYcQEAIQAQ%3c%2fstring%3e%0d%0a++%3c%21--leaderboard+Max+Depth--%3e%0d%0a++%3cstring+name%3d%22leaderboard_max_depth%22+translatable%3d%22false%22%3eCgkI7biksYcQEAIQAg%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ClientId=
+android.SetupDone=true
