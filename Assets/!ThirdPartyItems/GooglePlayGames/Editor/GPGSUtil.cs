@@ -445,7 +445,7 @@ namespace GooglePlayGames.Editor
         public static string GetAndroidSdkPath()
         {
             string sdkPath = EditorPrefs.GetString("AndroidSdkRoot");
-#if UNITY_2019 || UNITY_2020
+#if UNITY_2019
             // Unity 2019.x added installation of the Android SDK in the AndroidPlayer directory
             // so fallback to searching for it there.
             if (string.IsNullOrEmpty(sdkPath) || EditorPrefs.GetBool("SdkUseEmbedded"))
@@ -780,5 +780,4 @@ namespace GooglePlayGames.Editor
             return version;
         }
     }
-
 }

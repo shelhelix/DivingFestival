@@ -243,6 +243,7 @@ namespace GooglePlayGames.Android
             private Action<ConnectionResponse> mResponseCallback;
             private IMessageListener mListener;
             private AndroidJavaObject mClient;
+            private string mLocalEndpointName;
 
             public DiscoveringConnectionLifecycleCallback(Action<ConnectionResponse> responseCallback,
                 IMessageListener listener, AndroidJavaObject client) : base(
@@ -423,7 +424,7 @@ namespace GooglePlayGames.Android
                 {
                     string sysId = bundle.Call<string>("getString",
                         "com.google.android.gms.nearby.connection.SERVICE_ID");
-                    OurUtils.Logger.d("SystemId from Manifest: " + sysId);
+                    Debug.Log("SystemId from Manifest: " + sysId);
                     return sysId;
                 }
             }

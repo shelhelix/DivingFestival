@@ -779,7 +779,9 @@ namespace GooglePlayGames
                                     "Progress " + progress +
                                     " is less than or equal to 1. You might be trying to use values in the range of [0,1], while values are expected to be within the range [0,100]. If you are using the latter, you can safely ignore this message.");
                             }
-                            mClient.SetStepsAtLeast(achievementID, progressToSteps(progress, ach[i].TotalSteps), callback);
+
+                            int targetSteps = (int) Math.Round((progress / 100f) * ach[i].TotalSteps);
+                            mClient.SetStepsAtLeast(achievementID, targetSteps, callback);
                         }
                         else
                         {
@@ -806,10 +808,6 @@ namespace GooglePlayGames
                 GooglePlayGames.OurUtils.Logger.e("Unable to locate achievement " + achievementID);
                 callback.Invoke(false);
             });
-        }
-
-        internal static int progressToSteps(double progress, int totalSteps) {
-            return (progress >= 100.0) ? totalSteps : (int) (progress * totalSteps / 100.0);
         }
 
         /// <summary>
@@ -1251,7 +1249,7 @@ namespace GooglePlayGames
                 leaderboardId = MapId(leaderboardId);
             }
 
-            ShowLeaderboardUI(leaderboardId, LeaderboardTimeSpan.AllTime, null);
+            mClient.ShowLeaderboardUI(leaderboardId, LeaderboardTimeSpan.AllTime, null);
         }
 
         /// <summary>

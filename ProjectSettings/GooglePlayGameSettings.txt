@@ -1,5 +1,5 @@
-lastUpgrade=01012
-proj.pluginVersion=0.10.12
+lastUpgrade=01010
+proj.pluginVersion=0.10.10
 proj.AppId=551738219629
 and.BundleId=com.shelinc.divingfestival
 proj.classDir=Assets%2f%21ThirdPartyItems

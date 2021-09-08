@@ -110,7 +110,7 @@ namespace GooglePlayGames
             {
                 if (!mImageLoading && mImage == null && !string.IsNullOrEmpty(AvatarURL))
                 {
-                    OurUtils.Logger.d("Starting to load image: " + AvatarURL);
+                    Debug.Log("Starting to load image: " + AvatarURL);
                     mImageLoading = true;
                     PlayGamesHelperObject.RunCoroutine(LoadImage());
                 }
@@ -160,14 +160,14 @@ namespace GooglePlayGames
                 else
                 {
                     mImage = Texture2D.blackTexture;
-                    OurUtils.Logger.e("Error downloading image: " + www.error);
+                    Debug.Log("Error downloading image: " + www.error);
                 }
 
                 mImageLoading = false;
             }
             else
             {
-                OurUtils.Logger.e("No URL found.");
+                Debug.Log("No URL found.");
                 mImage = Texture2D.blackTexture;
                 mImageLoading = false;
             }
