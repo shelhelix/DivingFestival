@@ -2,15 +2,14 @@
 
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
-
-using LD48Project.ExternalServices.Ads;
+using LD48Project.ExternalServices;
 
 namespace LD48Project.Starter {
     public class GameplayStarter : GameComponent {
 	    [NotNull] public Submarine Submarine;
 
 	    void Start() {
-			AdvertisementService.Instance.Init();
+			AchievementService.Instance.Init(Submarine, GooglePlayGamesService.Instance);
 		    InitComponents();
 	    }
 
@@ -20,5 +19,9 @@ namespace LD48Project.Starter {
 			    comp.Init(this);
 		    }
 	    }
+
+		void Update() {
+			AchievementService.Instance.TryToReportAchievementsProgress();
+		}
     }
 }

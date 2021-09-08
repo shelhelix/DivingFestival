@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
+using LD48Project.ExternalServices;
 using LD48Project.ExternalServices.Ads;
 using TMPro;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace LD48Project.UI {
 			GameplayUI.DOFade(0f, 0.5f);
 			transform.DOMove(CenterPoint.position, 1f);
 			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(x => OnAd(x, submarine)));
+			AchievementService.Instance.TryToReportAchievementsProgress();
+			GooglePlayGamesService.Instance.PublishScore(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(submarine.Depth.Value));
 		}
 
 		void OnAd(bool success, Submarine submarine) {
