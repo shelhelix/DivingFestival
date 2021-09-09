@@ -1,9 +1,11 @@
-﻿using DG.Tweening;
+﻿using System.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
+using GooglePlayGames.BasicApi;
 using LD48Project.ExternalServices;
 using LD48Project.ExternalServices.Ads;
 using TMPro;
@@ -25,6 +27,14 @@ namespace LD48Project.UI {
 		
 		Vector3 _startPos;
 
+		Task<LeaderboardScoreData> _leaderboardTask;
+
+		void Update() {
+			if ( _leaderboardTask != null && _leaderboardTask.IsCompleted ) {
+				HighScoreUI.Init(_leaderboardTask.Result);
+			}
+		}
+		
 		public void Init(Submarine submarine, float depth) {
 			_startPos          = transform.position;
 			DepthDescText.text = string.Format(DepthDescTemplate, depth);
@@ -34,8 +44,7 @@ namespace LD48Project.UI {
 			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(x => OnAd(x, submarine)));
 			AchievementService.Instance.TryToReportAchievementsProgress();
 			GooglePlayGamesService.Instance.PublishScore(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(submarine.Depth.Value));
-			var highScoreTable = GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTable(GPGSIds.leaderboard_max_depth).Result;
-			HighScoreUI.Init(highScoreTable);
+			_leaderboardTask = GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTable(GPGSIds.leaderboard_max_depth);
 		}
 
 		void OnAd(bool success, Submarine submarine) {
