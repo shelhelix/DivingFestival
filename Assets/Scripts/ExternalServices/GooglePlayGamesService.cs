@@ -8,9 +8,10 @@ using UnityEngine;
 
 namespace LD48Project.ExternalServices {
 	public class GooglePlayGamesService : Singleton<GooglePlayGamesService> {
-
-		bool _isLoggedIn;
 		bool _isInited;
+		
+		public bool   IsLoggedIn      { get; private set;  }
+		public object LoginFailReason { get; private set; }
 
 		public GooglePlayGamesService() {
 			Init();
@@ -23,10 +24,10 @@ namespace LD48Project.ExternalServices {
 			_isInited                         = true;
 			PlayGamesPlatform.DebugLogEnabled = true;
 			PlayGamesPlatform.Activate();
-			PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptOnce, status => {
-				_isLoggedIn = status == SignInStatus.Success;
-				if ( !_isLoggedIn ) {
-					Debug.LogError($"Can't log in. Reason: {status}");
+			PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, status => {
+				IsLoggedIn = status == SignInStatus.Success;
+				if ( !IsLoggedIn ) {
+					LoginFailReason = status;
 				}
 			} );
 		}
@@ -51,14 +52,14 @@ namespace LD48Project.ExternalServices {
 
 
 		public void PublishScore(string highscoreTableId, long score) {
-			if ( !_isLoggedIn ) {
+			if ( !IsLoggedIn ) {
 				return;
 			}
 			Social.ReportScore(score, highscoreTableId, null);
 		}
 
 		public void SetProgressToAchievement(string achievementId, float progressPercent) {
-			if ( !_isLoggedIn ) {
+			if ( !IsLoggedIn ) {
 				return;
 			}
 			Social.ReportProgress(achievementId, progressPercent, null);
