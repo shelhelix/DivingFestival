@@ -20,6 +20,8 @@ namespace LD48Project.UI {
 		[NotNull] public CanvasGroup GameplayUI;
 
 		[NotNull] public Transform CenterPoint;
+
+		[NotNull] public HighScoreUI HighScoreUI;
 		
 		Vector3 _startPos;
 
@@ -32,6 +34,8 @@ namespace LD48Project.UI {
 			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(x => OnAd(x, submarine)));
 			AchievementService.Instance.TryToReportAchievementsProgress();
 			GooglePlayGamesService.Instance.PublishScore(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(submarine.Depth.Value));
+			var highScoreTable = GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTable(GPGSIds.leaderboard_max_depth).Result;
+			HighScoreUI.Init(highScoreTable);
 		}
 
 		void OnAd(bool success, Submarine submarine) {
