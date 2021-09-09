@@ -49,7 +49,8 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
-    "com.cysharp.unitask": "2.2.5"
+    "com.cysharp.unitask": "2.2.5",
+    "com.yasirkula.ingamedebugconsole": "1.5.1"
   },
   "scopedRegistries": [
     {
@@ -59,7 +60,8 @@
         "com.cysharp.unitask",
         "com.demigiant.dotween",
         "com.openupm",
-        "com.tayx.graphy"
+        "com.tayx.graphy",
+        "com.yasirkula.ingamedebugconsole"
       ]
     },
     {

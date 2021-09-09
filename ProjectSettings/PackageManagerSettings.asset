@@ -28,6 +28,7 @@ MonoBehaviour:
     - com.demigiant.dotween
     - com.openupm
     - com.tayx.graphy
+    - com.yasirkula.ingamedebugconsole
     m_IsDefault: 0
   - m_Id: scoped:Game Package Registry by Google
     m_Name: Game Package Registry by Google
@@ -48,6 +49,7 @@ MonoBehaviour:
       - com.demigiant.dotween
       - com.openupm
       - com.tayx.graphy
+      - com.yasirkula.ingamedebugconsole
       m_IsDefault: 0
     m_Modified: 0
     m_Name: openUPM
@@ -57,4 +59,5 @@ MonoBehaviour:
     - com.demigiant.dotween
     - com.openupm
     - com.tayx.graphy
+    - com.yasirkula.ingamedebugconsole
     m_SelectedScopeIndex: 0
