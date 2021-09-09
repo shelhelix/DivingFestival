@@ -46,6 +46,8 @@ namespace LD48Project {
 
 		[NotNull] public EndgameWindow EndgameWindow;
 
+		[NotNull] public MobileSubmarineControl Control;
+		
 		public readonly Dictionary<Subsystem, ReactiveValue<int>> EnergyDistribution =
 			new Dictionary<Subsystem, ReactiveValue<int>> {
 				{Subsystem.LeftShield, new ReactiveValue<int>()},
@@ -76,23 +78,23 @@ namespace LD48Project {
 			if ( _stopEveryting ) {
 				return;
 			}
-
-			foreach ( var control in SubsystemsControls ) {
-				if ( Input.GetKeyDown(control.Value) ) {
-					if ( !TryAddPowerToSystem(control.Key) ) {
-						RunRedAnimation(UsedPower.Background);
-					}
-				}
-			}
+			
+			
+			ControlPowerWithKeys();
 
 			UsedPower.Text.text =  $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
-			CurPower.Value      -= TotalUsedPower * Time.deltaTime;
 
 			Depth.Value += Time.deltaTime * EnginePower;
 
-			if ( (CurPower.Value <= 0) || (Hp.Value <= 0) ) {
+			if ( (Hp.Value <= 0) ) {
 				_stopEveryting = true;
 				EndgameWindow.Init(this, Depth.Value);
+			}
+		}
+
+		public void ControlPower(Subsystem subsystem) {
+			if ( !TryAddPowerToSystem(subsystem) ) {
+				RunRedAnimation(UsedPower.Background);
 			}
 		}
 
@@ -100,6 +102,7 @@ namespace LD48Project {
 			CurPower.Value = StartPower;
 			Hp.Value = StartHp;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
+			Control.Init(this);
 		}
 		
 		public void RestoreSubmarine() {
@@ -115,6 +118,14 @@ namespace LD48Project {
 			var systemName = SideToSystem[side];
 			var shieldPower = EnergyDistribution[systemName].Value;
 			Hp.Value -= Math.Max(damage - shieldPower, 0);
+		}
+
+		void ControlPowerWithKeys() {
+			foreach ( var control in SubsystemsControls ) {
+				if ( Input.GetKeyDown(control.Value) ) {
+					ControlPower(control.Key);
+				}
+			}
 		}
 
 		bool TryAddPowerToSystem(Subsystem system) {
