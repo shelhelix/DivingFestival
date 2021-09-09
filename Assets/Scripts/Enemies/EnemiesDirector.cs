@@ -11,6 +11,10 @@ namespace LD48Project.Enemies {
 		[NotNullOrEmpty] public List<EnemyWithSignContainer> Enemies;
 		[NotNull] public Transform Submarine;
 
+		const float WaveTimeChange = 0.1f;
+
+		int _waveIndex;
+		
 		public float StartDelay = 5;
 		
 		public float WarningBlinkingTime = 0.5f;
@@ -49,9 +53,11 @@ namespace LD48Project.Enemies {
 		}
 
 		void TryStartNewEnemy() {
+			_waveIndex++;
 			var randomEnemyIndex = Random.Range(0, Enemies.Count);
-			var container = Enemies[randomEnemyIndex];
-			container.Enemy.Run(Submarine.transform, WarningPeriods * WarningBlinkingTime);
+			var container        = Enemies[randomEnemyIndex];
+			var warningTime      = Mathf.Max(WarningPeriods * WarningBlinkingTime - WaveTimeChange * _waveIndex, 0.2f);
+			container.Enemy.Run(Submarine.transform, warningTime);
 			container.Enemy.OnRunCompleted += OnEnemyWaveCompleted;
 			CreateWarningSeq(container.WarningSign);
 			_isRunning = true;
