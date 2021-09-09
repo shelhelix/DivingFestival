@@ -7,6 +7,10 @@ namespace LD48Project.ExternalServices.Ads {
 		AdvertisementWrapper _rewardAdWrapper;
 
 		bool _isInited;
+
+		public AdvertisementService() {
+			Init();
+		}
 		
 		public void Init() {
 			if ( _isInited ) {

@@ -9,6 +9,10 @@ namespace LD48Project.ExternalServices {
 		bool _isLoggedIn;
 		bool _isInited;
 
+		public GooglePlayGamesService() {
+			Init();
+		}
+
 		public void Init() {
 			if ( _isInited ) {
 				return;
@@ -26,7 +30,6 @@ namespace LD48Project.ExternalServices {
 
 		public void PublishScore(string highscoreTableId, long score) {
 			if ( !_isLoggedIn ) {
-				Debug.LogError("Can't report score - user not logged in");
 				return;
 			}
 			Social.ReportScore(score, highscoreTableId, null);
@@ -34,7 +37,6 @@ namespace LD48Project.ExternalServices {
 
 		public void SetProgressToAchievement(string achievementId, float progressPercent) {
 			if ( !_isLoggedIn ) {
-				Debug.LogError("Can't set progress to the achievement - user not logged in");
 				return;
 			}
 			Social.ReportProgress(achievementId, progressPercent, null);
