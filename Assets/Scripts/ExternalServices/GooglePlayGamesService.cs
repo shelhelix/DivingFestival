@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using GooglePlayGames;
@@ -32,30 +33,31 @@ namespace LD48Project.ExternalServices {
 			} );
 		}
 
-		public async Task<LeaderboardScoreData> RequestPlayerCentricHighScoreTable(string tableId) {
+		public async Task<LeaderboardScoreData> RequestPlayerCentricHighScoreTableAsync(string tableId) {
 			if ( !_isInited ) {
 				return null;
 			}
+			UniTask.SwitchToThreadPool();
 			LeaderboardScoreData data = null;
 			PlayGamesPlatform.Instance.LoadScores(tableId, LeaderboardStart.PlayerCentered, 10, LeaderboardCollection.Public, LeaderboardTimeSpan.AllTime,
 				(x) => {
 					data = x;
-					foreach ( var score in x.Scores ) {
-						Debug.LogWarning($"UserId: {score.userID} Score: {score.value}");
-					}
 				});
-			while ( data == null ) {
-				await UniTask.Yield();
-			}
+			await UniTask.WaitWhile(() => data == null);
 			return data;
 		}
 
 
-		public void PublishScore(string highscoreTableId, long score) {
+		public async UniTask PublishScoreAsync(string highScoreTableId, long score) {
 			if ( !IsLoggedIn ) {
 				return;
 			}
-			Social.ReportScore(score, highscoreTableId, null);
+			UniTask.SwitchToThreadPool();
+			var completed = false;
+			Social.ReportScore(score, highScoreTableId, (x) => {
+				completed = true;
+			});
+			await UniTask.WaitWhile(() => !completed);
 		}
 
 		public void SetProgressToAchievement(string achievementId, float progressPercent) {
