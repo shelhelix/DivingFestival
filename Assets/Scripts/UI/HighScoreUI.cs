@@ -18,7 +18,8 @@ namespace LD48Project.UI {
 					.Append(" ")
 					.Append(score.userID)
 					.Append(" ")
-					.Append(score.formattedValue);
+					.Append(score.formattedValue)
+					.AppendLine();
 			}
 
 			Text.text = builder.ToString();

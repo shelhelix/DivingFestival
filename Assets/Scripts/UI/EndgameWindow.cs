@@ -1,17 +1,14 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-using GameComponentAttributes;
-using GameComponentAttributes.Attributes;
-using GooglePlayGames.BasicApi;
 using LD48Project.ExternalServices;
 using LD48Project.ExternalServices.Ads;
+
+using DG.Tweening;
+using GameComponentAttributes;
+using GameComponentAttributes.Attributes;
 using TMPro;
-using UnityEngine;
-using UnityEngine.Advertisements;
 
 namespace LD48Project.UI {
 	public class EndgameWindow : GameComponent {
