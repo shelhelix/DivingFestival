@@ -23,7 +23,7 @@ namespace LD48Project.ExternalServices {
 				return;
 			}
 			_isInited                         = true;
-			PlayGamesPlatform.DebugLogEnabled = true;
+			PlayGamesPlatform.DebugLogEnabled = false;
 			PlayGamesPlatform.Activate();
 			PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, status => {
 				IsLoggedIn = status == SignInStatus.Success;
