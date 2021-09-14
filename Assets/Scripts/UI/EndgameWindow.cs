@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -27,31 +28,34 @@ namespace LD48Project.UI {
 		
 		Vector3 _startPos;
 
-		Task<LeaderboardScoreData> _leaderboardTask;
+		GooglePlayGamesService _playGamesService;
 
-		void Update() {
-			if ( _leaderboardTask != null && _leaderboardTask.IsCompleted ) {
-				HighScoreUI.Init(_leaderboardTask.Result);
-			}
-		}
-		
-		public void Init(Submarine submarine, float depth) {
+		Submarine _submarine;
+
+		public void Init(Submarine submarine) {
+			_playGamesService  = GooglePlayGamesService.Instance;
 			_startPos          = transform.position;
-			DepthDescText.text = string.Format(DepthDescTemplate, depth);
+			_submarine         = submarine;
+			DepthDescText.text = string.Format(DepthDescTemplate, submarine.Depth.Value);
 			ReturnToMenuButton.onClick.AddListener(() => SceneManager.LoadScene("StartMenu"));
 			GameplayUI.DOFade(0f, 0.5f);
 			transform.DOMove(CenterPoint.position, 1f);
-			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(x => OnAd(x, submarine)));
+			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(OnAd));
 			AchievementService.Instance.TryToReportAchievementsProgress();
-			GooglePlayGamesService.Instance.PublishScore(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(submarine.Depth.Value));
-			_leaderboardTask = GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTable(GPGSIds.leaderboard_max_depth);
+			InitLeaderboard();
 		}
 
-		void OnAd(bool success, Submarine submarine) {
+		async void InitLeaderboard() {
+			await _playGamesService.PublishScoreAsync(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(_submarine.Depth.Value));
+			var leaderboard = await GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTableAsync(GPGSIds.leaderboard_max_depth);
+			HighScoreUI.Init(leaderboard);
+		}
+
+		void OnAd(bool success) {
 			if ( !success ) {
 				return;
 			}
-			submarine.RestoreSubmarine();
+			_submarine.RestoreSubmarine();
 			GameplayUI.DOFade(1f, 0.5f);
 			transform.DOMove(_startPos, 0.5f);
 		}

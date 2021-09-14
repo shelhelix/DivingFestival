@@ -88,7 +88,7 @@ namespace LD48Project {
 
 			if ( (Hp.Value <= 0) ) {
 				_stopEveryting = true;
-				EndgameWindow.Init(this, Depth.Value);
+				EndgameWindow.Init(this);
 			}
 		}
 
