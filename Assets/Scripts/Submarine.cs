@@ -78,18 +78,9 @@ namespace LD48Project {
 			if ( _stopEveryting ) {
 				return;
 			}
-			
-			
 			ControlPowerWithKeys();
-
 			UsedPower.Text.text =  $"{TotalUsedPower.ToString()}/{MaxSubmarineSpeed}";
-
-			Depth.Value += Time.deltaTime * EnginePower;
-
-			if ( (Hp.Value <= 0) ) {
-				_stopEveryting = true;
-				EndgameWindow.Init(this);
-			}
+			Depth.Value         += Time.deltaTime * EnginePower;
 		}
 
 		public void ControlPower(Subsystem subsystem) {
@@ -99,8 +90,9 @@ namespace LD48Project {
 		}
 
 		public override void Init(GameplayStarter starter) {
-			CurPower.Value = StartPower;
-			Hp.Value = StartHp;
+			CurPower.Value                                      =  StartPower;
+			Hp.Value                                            =  StartHp;
+			Hp.OnValueChanged                                   += OnDied;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
 			Control.Init(this);
 		}
@@ -118,6 +110,14 @@ namespace LD48Project {
 			var systemName = SideToSystem[side];
 			var shieldPower = EnergyDistribution[systemName].Value;
 			Hp.Value -= Math.Max(damage - shieldPower, 0);
+		}
+
+		void OnDied(int value) {
+			if ( value > 0 ) {
+				return;
+			}
+			_stopEveryting = true;
+			EndgameWindow.Init(this);
 		}
 
 		void ControlPowerWithKeys() {
