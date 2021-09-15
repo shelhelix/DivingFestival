@@ -148,15 +148,6 @@ namespace LD48Project {
 			EnergyDistribution[system].Value++;
 			return true;
 		}
-		
-		bool TrySubtractPower(Subsystem system) {
-			if ( EnergyDistribution[system].Value == 0 ) {
-				Debug.LogWarning($"Can't sub power. power for system {system} is zero");
-				return false;
-			}
-			EnergyDistribution[system].Value--;
-			return true;
-		}
 
 		void RunRedAnimation(Image image) {
 			var seq = DOTween.Sequence();
