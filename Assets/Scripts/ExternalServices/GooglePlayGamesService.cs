@@ -6,6 +6,7 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using LD48Project.Utils;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace LD48Project.ExternalServices {
 	public class GooglePlayGamesService : Singleton<GooglePlayGamesService> {
@@ -33,7 +34,7 @@ namespace LD48Project.ExternalServices {
 			} );
 		}
 
-		public async Task<LeaderboardScoreData> RequestPlayerCentricHighScoreTableAsync(string tableId) {
+		public async UniTask<LeaderboardScoreData> RequestPlayerCentricHighScoreTableAsync(string tableId) {
 			if ( !_isInited ) {
 				return null;
 			}
@@ -54,10 +55,19 @@ namespace LD48Project.ExternalServices {
 			}
 			UniTask.SwitchToThreadPool();
 			var completed = false;
-			Social.ReportScore(score, highScoreTableId, (x) => {
+			PlayGamesPlatform.Instance.ReportScore(score, highScoreTableId, (x) => {
 				completed = true;
 			});
 			await UniTask.WaitWhile(() => !completed);
+		}
+
+		public async UniTask<IUserProfile[]> GetUserNamesAsync(string[] userIds) {
+			IUserProfile[] result      = null;
+			PlayGamesPlatform.Instance.LoadUsers(userIds, (x) => {
+				result      = x;
+			});
+			await UniTask.WaitWhile(() => result == null);
+			return result;
 		}
 
 		public void SetProgressToAchievement(string achievementId, float progressPercent) {
