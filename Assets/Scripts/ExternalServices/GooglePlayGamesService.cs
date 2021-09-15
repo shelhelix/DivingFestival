@@ -38,7 +38,7 @@ namespace LD48Project.ExternalServices {
 			if ( !_isInited ) {
 				return null;
 			}
-			UniTask.SwitchToThreadPool();
+			await UniTask.SwitchToThreadPool();
 			LeaderboardScoreData data = null;
 			PlayGamesPlatform.Instance.LoadScores(tableId, LeaderboardStart.PlayerCentered, 10, LeaderboardCollection.Public, LeaderboardTimeSpan.AllTime,
 				(x) => {
@@ -53,7 +53,7 @@ namespace LD48Project.ExternalServices {
 			if ( !IsLoggedIn ) {
 				return;
 			}
-			UniTask.SwitchToThreadPool();
+			await UniTask.SwitchToThreadPool();
 			var completed = false;
 			PlayGamesPlatform.Instance.ReportScore(score, highScoreTableId, (x) => {
 				completed = true;
