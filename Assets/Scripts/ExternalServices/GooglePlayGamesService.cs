@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using UnityEngine;
+using UnityEngine.SocialPlatforms;
+
+using LD48Project.Utils;
+
 using Cysharp.Threading.Tasks;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
-using LD48Project.Utils;
-using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 namespace LD48Project.ExternalServices {
 	public class GooglePlayGamesService : Singleton<GooglePlayGamesService> {
@@ -38,7 +37,6 @@ namespace LD48Project.ExternalServices {
 			if ( !_isInited ) {
 				return null;
 			}
-			await UniTask.SwitchToThreadPool();
 			LeaderboardScoreData data = null;
 			PlayGamesPlatform.Instance.LoadScores(tableId, LeaderboardStart.PlayerCentered, 10, LeaderboardCollection.Public, LeaderboardTimeSpan.AllTime,
 				(x) => {
@@ -53,7 +51,6 @@ namespace LD48Project.ExternalServices {
 			if ( !IsLoggedIn ) {
 				return;
 			}
-			await UniTask.SwitchToThreadPool();
 			var completed = false;
 			PlayGamesPlatform.Instance.ReportScore(score, highScoreTableId, (x) => {
 				completed = true;
@@ -62,6 +59,9 @@ namespace LD48Project.ExternalServices {
 		}
 
 		public async UniTask<IUserProfile[]> GetUserNamesAsync(string[] userIds) {
+			if ( !IsLoggedIn ) {
+				return null;
+			}
 			IUserProfile[] result      = null;
 			PlayGamesPlatform.Instance.LoadUsers(userIds, (x) => {
 				result      = x;
