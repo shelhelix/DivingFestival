@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -8,6 +11,7 @@ using LD48Project.ExternalServices.Ads;
 using DG.Tweening;
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
+using GooglePlayGames.BasicApi;
 using TMPro;
 
 namespace LD48Project.UI {
@@ -45,7 +49,19 @@ namespace LD48Project.UI {
 		async void InitLeaderboard() {
 			await _playGamesService.PublishScoreAsync(GPGSIds.leaderboard_max_depth, Mathf.FloorToInt(_submarine.Depth.Value));
 			var leaderboard = await GooglePlayGamesService.Instance.RequestPlayerCentricHighScoreTableAsync(GPGSIds.leaderboard_max_depth);
-			HighScoreUI.Init(leaderboard);
+			var idToNameConverter = await GetUserIdToUserNameConverted(leaderboard);
+			HighScoreUI.Init(leaderboard, idToNameConverter);
+		}
+
+		async UniTask<Dictionary<string, string>> GetUserIdToUserNameConverted(LeaderboardScoreData data) {
+			var res     = new Dictionary<string, string>();
+			var userIds = data.Scores.Select(score => score.userID).ToArray();
+			var users = await GooglePlayGamesService.Instance.GetUserNamesAsync(userIds);
+			foreach ( var id in userIds ) {
+				var user = users.First(x => x.id == id);
+				res.Add(id, user.userName);
+			}
+			return res;
 		}
 
 		void OnAd(bool success) {
