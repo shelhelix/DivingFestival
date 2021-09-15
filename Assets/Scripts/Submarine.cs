@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections.Generic;
-using System.Linq;
-using DG.Tweening;
 using LD48Project.Starter;
-
-using GameComponentAttributes.Attributes;
 using LD48Project.UI;
 using LD48Project.Utils;
+
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using GameComponentAttributes.Attributes;
 
 namespace LD48Project {
 	public class Submarine : GameplayComponent {
@@ -30,15 +31,15 @@ namespace LD48Project {
 		const int DefaultBubbleEmission = 7;
 
 		public float MaxSubmarineSpeed = 1;
-		public float StartPower        = 100;
+		public float InvincibleTimeSec = 2;
 		public int   StartHp           = 5;
 
 		public ReactiveValue<int> Hp = new ReactiveValue<int>();
 
-		public ReactiveValue<float> CurPower = new ReactiveValue<float>();
 		public ReactiveValue<float> Depth    = new ReactiveValue<float>();
 
 		bool _stopEveryting;
+		bool _isInvincible;
 
 		[NotNull] public BasicItemView UsedPower;
 
@@ -90,7 +91,6 @@ namespace LD48Project {
 		}
 
 		public override void Init(GameplayStarter starter) {
-			CurPower.Value                                      =  StartPower;
 			Hp.Value                                            =  StartHp;
 			Hp.OnValueChanged                                   += OnDied;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
@@ -100,16 +100,22 @@ namespace LD48Project {
 		public void RestoreSubmarine() {
 			_stopEveryting = false;
 			Hp.Value       = Mathf.Clamp(Hp.Value + 2, 2, StartHp);
-			CurPower.Value = Mathf.Clamp(CurPower.Value + StartPower / 2, StartPower / 2, StartPower);
+			UniTask.Void(MakeInvincibleForTime);
 		}
 		
 		public void TakeDamage(Side side, int damage) {
-			if ( _stopEveryting ) {
+			if ( _stopEveryting || _isInvincible ) {
 				return;
 			}
-			var systemName = SideToSystem[side];
+			var systemName  = SideToSystem[side];
 			var shieldPower = EnergyDistribution[systemName].Value;
 			Hp.Value -= Math.Max(damage - shieldPower, 0);
+		}
+
+		async UniTaskVoid MakeInvincibleForTime() {
+			_isInvincible = true;
+			await UniTask.Delay(TimeSpan.FromSeconds(InvincibleTimeSec));
+			_isInvincible = false;
 		}
 
 		void OnDied(int value) {
