@@ -144,8 +144,9 @@ GameObject:
   - component: {fileID: 5398486528854625084}
   - component: {fileID: 5398486528854625086}
   - component: {fileID: 5398486528854625087}
+  - component: {fileID: 872281640227075828}
   m_Layer: 0
-  m_Name: LeaderBoardEntry (1)
+  m_Name: LeaderBoardEntry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,6 +211,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &872281640227075828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5398486528854625085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 780f9eadb6784f05a1a9192eba25c8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Place: {fileID: 5398486529599180362}
+  UserName: {fileID: 5398486528421141421}
+  Depth: {fileID: 5398486529059231218}
 --- !u!1 &5398486529059231216
 GameObject:
   m_ObjectHideFlags: 0

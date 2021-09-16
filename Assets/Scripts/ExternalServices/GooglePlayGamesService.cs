@@ -33,12 +33,12 @@ namespace LD48Project.ExternalServices {
 			} );
 		}
 
-		public async UniTask<LeaderboardScoreData> RequestPlayerCentricHighScoreTableAsync(string tableId) {
+		public async UniTask<LeaderboardScoreData> RequestPlayerCentricHighScoreTableAsync(string tableId, int recordsCount) {
 			if ( !_isInited ) {
 				return null;
 			}
 			LeaderboardScoreData data = null;
-			PlayGamesPlatform.Instance.LoadScores(tableId, LeaderboardStart.PlayerCentered, 10, LeaderboardCollection.Public, LeaderboardTimeSpan.AllTime,
+			PlayGamesPlatform.Instance.LoadScores(tableId, LeaderboardStart.PlayerCentered, recordsCount, LeaderboardCollection.Public, LeaderboardTimeSpan.AllTime,
 				(x) => {
 					data = x;
 				});
