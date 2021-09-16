@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.brunomikoski.animationsequencer": {
+      "version": "https://github.com/brunomikoski/Animation-Sequencer.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3e3288d9665127333a96c0e90a687622bf1dec3b"
+    },
     "com.cysharp.unitask": {
       "version": "2.2.5",
       "depth": 0,
