@@ -12,6 +12,7 @@ using DG.Tweening;
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
 using GooglePlayGames.BasicApi;
+using LD48Project.ExternalServices.Leaderboards;
 using TMPro;
 
 namespace LD48Project.UI {

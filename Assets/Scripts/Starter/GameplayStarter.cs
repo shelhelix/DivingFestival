@@ -9,8 +9,10 @@ namespace LD48Project.Starter {
 	    [NotNull] public Submarine Submarine;
 
 	    void Start() {
+			#if UNITY_ANDROID
 			AchievementService.Instance.Init(Submarine, GooglePlayGamesService.Instance);
-		    InitComponents();
+			#endif
+			InitComponents();
 	    }
 
 	    void InitComponents() {

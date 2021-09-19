@@ -14,8 +14,9 @@ namespace LD48Project {
 		void Start() {
 			// Init external services
 			AdvertisementService.Instance.Init();
+			#if UNITY_ANDROID
 			GooglePlayGamesService.Instance.Init();
-			
+			#endif
 			StartGame.onClick.AddListener(() => SceneManager.LoadScene("Gameplay"));			
 		}
 

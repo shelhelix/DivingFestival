@@ -1,26 +1,18 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_ANDROID
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using GooglePlayGames.BasicApi;
+using LD48Project.ExternalServices.Leaderboards;
 using LD48Project.Utils;
 using UnityEngine;
 
 namespace LD48Project.ExternalServices {
-	public readonly struct Score {
-		public readonly int    Rank;
-		public readonly long   ScoreValue;
-		public readonly string UserName;
 
-		public Score(int rank, long score, string userName) {
-			Rank       = rank;
-			ScoreValue = score;
-			UserName   = userName;
-		}
-	}
+	public class AndroidLeaderboardService : Singleton<AndroidLeaderboardService>, ILeaderboardService {
 
-	public class LeaderboardService : Singleton<LeaderboardService> {
 
-		public UniTask PublishScore(long score) {
+		public UniTask PublishScoreAsync(long score) {
 			return GooglePlayGamesService.Instance.PublishScoreAsync(GPGSIds.leaderboard_max_depth, score);
 		}
 
@@ -59,3 +51,4 @@ namespace LD48Project.ExternalServices {
 		}
 	}
 }
+#endif

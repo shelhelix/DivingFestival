@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_ANDROID
+using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
 using LD48Project.Utils;
@@ -78,3 +79,4 @@ namespace LD48Project.ExternalServices {
 		}
 	}
 }
+#endif

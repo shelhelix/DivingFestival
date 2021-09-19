@@ -4,6 +4,7 @@ using DG.Tweening;
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
 using LD48Project.ExternalServices;
+using LD48Project.ExternalServices.Leaderboards;
 using TMPro;
 using UnityEngine;
 
