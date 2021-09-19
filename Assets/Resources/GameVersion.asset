@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: GameVersion
   m_EditorClassIdentifier: 
   MajorVersion: 0
-  MinorVersion: 0
+  MinorVersion: 2
   InternalVersion: 1
+  CurrentBuildType: 1
