@@ -7644,7 +7644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSubmarineSpeed: 5
   InvincibleTimeSec: 2
-  StartHp: 7
+  StartHp: 1
   UsedPower: {fileID: 286764372}
   EngineBubbles: {fileID: 114469821}
   EndgameWindow: {fileID: 1025315578}
