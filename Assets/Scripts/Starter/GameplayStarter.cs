@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
-
-using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
+using LD48Project.Common;
 using LD48Project.ExternalServices;
+using LD48Project.ExternalServices.Ads;
+using LD48Project.Leaderboards;
 
 namespace LD48Project.Starter {
-    public class GameplayStarter : GameComponent {
+    public class GameplayStarter : BaseStarter {
 	    [NotNull] public Submarine Submarine;
 
+		public LeaderboardController LeaderboardController => GameController.Instance.LeaderboardController;
+		
 	    void Start() {
+			AdvertisementService.Instance.Init();
 			#if UNITY_ANDROID
+			GooglePlayGamesService.Instance.Init();
 			AchievementService.Instance.Init(Submarine, GooglePlayGamesService.Instance);
 			#endif
+			
 			InitComponents();
 	    }
 

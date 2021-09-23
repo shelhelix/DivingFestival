@@ -12,6 +12,7 @@ using LD48Project.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameComponentAttributes.Attributes;
+using LD48Project.Leaderboards;
 
 namespace LD48Project {
 	public class Submarine : GameplayComponent {
@@ -40,6 +41,8 @@ namespace LD48Project {
 
 		bool _stopEveryting;
 		bool _isInvincible;
+
+		LeaderboardController _leaderboardController;
 
 		[NotNull] public BasicItemView UsedPower;
 
@@ -94,6 +97,7 @@ namespace LD48Project {
 			Hp.Value                                            =  StartHp;
 			Hp.OnValueChanged                                   += OnDied;
 			EnergyDistribution[Subsystem.Engine].OnValueChanged += OnEnginePowerChanged;
+			_leaderboardController                              =  starter.LeaderboardController;
 			Control.Init(this);
 		}
 		
@@ -123,7 +127,7 @@ namespace LD48Project {
 				return;
 			}
 			_stopEveryting = true;
-			EndgameWindow.Init(this);
+			EndgameWindow.Init(_leaderboardController, this);
 		}
 
 		void ControlPowerWithKeys() {

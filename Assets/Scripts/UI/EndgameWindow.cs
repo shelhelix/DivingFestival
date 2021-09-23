@@ -1,19 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-
-using LD48Project.ExternalServices;
-using LD48Project.ExternalServices.Ads;
-
+﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
-using GooglePlayGames.BasicApi;
-using LD48Project.ExternalServices.Leaderboards;
+using LD48Project.ExternalServices.Ads;
+using LD48Project.Leaderboards;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace LD48Project.UI {
 	public class EndgameWindow : GameComponent {
@@ -33,17 +27,16 @@ namespace LD48Project.UI {
 		Submarine _submarine;
 
 		Tween _showTween;
+
+		LeaderboardController _leaderboardController;
 		
-		void Update() {
-			
-		}
-		
-		public void Init(Submarine submarine) {
+		public void Init(LeaderboardController leaderboardController, Submarine submarine) {
 			GameplayUI.DOFade(0f, 0.5f);
-			_showTween         = transform.DOMove(CenterPoint.position, 1f);
-			_startPos          = transform.position;
-			_submarine         = submarine;
-			DepthDescText.text = string.Format(DepthDescTemplate, submarine.Depth.Value);
+			_leaderboardController = leaderboardController;
+			_showTween             = transform.DOMove(CenterPoint.position, 1f);
+			_startPos              = transform.position;
+			_submarine             = submarine;
+			DepthDescText.text     = string.Format(DepthDescTemplate, submarine.Depth.Value);
 			ReturnToMenuButton.onClick.AddListener(() => SceneManager.LoadScene("StartMenu"));
 			AddPowerAdButton.onClick.AddListener(() => AdvertisementService.Instance.ShowAd(OnAd));
 			AchievementService.Instance.TryToReportAchievementsProgress();
@@ -52,8 +45,8 @@ namespace LD48Project.UI {
 		}
 
 		async void InitLeaderboard() {
-			await LeaderboardService.Instance.PublishScore(Mathf.FloorToInt(_submarine.Depth.Value));
-			LeaderBoard.Init();
+			await _leaderboardController.PublishScoreAsync(Mathf.FloorToInt(_submarine.Depth.Value));
+			LeaderBoard.Init(_leaderboardController);
 		}
 
 		async void TriggerLeaderboardAnimation() {

@@ -13,16 +13,23 @@ namespace LD48Project {
 		List<BaseAchievement> _achievements;
 
 		readonly Dictionary<BaseAchievement, float> _lastProgress = new Dictionary<BaseAchievement, float>();
+
+		bool IsInited => _googlePlayGamesService != null;
+		
 		public void Init(Submarine submarine, GooglePlayGamesService googleService) {
 			_googlePlayGamesService = googleService;
 			_achievements = new List<BaseAchievement> {
 				new DepthAchievement(30, submarine.Depth)
 			};
+
 		}
 #endif
 
 		public void TryToReportAchievementsProgress() {
 #if UNITY_ANDROID
+			if ( !IsInited ) {
+				return;
+			}
 			foreach ( var achievement in _achievements ) {
 				_lastProgress.TryGetValue(achievement, out var lastProgress);
 				var newProgress = achievement.GetProgress();

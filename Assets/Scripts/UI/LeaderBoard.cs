@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using GameComponentAttributes;
 using GameComponentAttributes.Attributes;
-using LD48Project.ExternalServices;
-using LD48Project.ExternalServices.Leaderboards;
+using LD48Project.Leaderboards;
 using TMPro;
 using UnityEngine;
 
@@ -15,14 +13,14 @@ namespace LD48Project.UI {
 
 		public bool Inited { get; private set;  }
 		
-		public async void Init() {
+		public async void Init(LeaderboardController leaderboardController) {
 			foreach ( var entry in Entries ) {
 				entry.Deinit();
 			}
 			LoadingText.gameObject.SetActive(true);
 			LoadingText.transform.localScale = Vector3.one;
 			LoadingText.text           = "Loading leaderboard...";
-			var scores = await LeaderboardService.Instance.GetScoresAroundPlayer(Entries.Count);
+			var scores = await leaderboardController.GetScoresAroundPlayerAsync(Entries.Count);
 			if ( scores == null ) {
 				LoadingText.text = "Can't load global leaderboard";
 				return;
